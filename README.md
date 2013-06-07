@@ -50,9 +50,14 @@ modules, etc - just a handful, follow these and you'll get a feel for who
 they're conversing with that you should also follow
 
 [@izs](https://twitter.com/izs)
+
 [@felixge](https://twitter.com/felixge)
+
 [@dshaw](https://twitter.com/dshaw)
+
 [@dscape](https://twitter.com/dscape)
+
 [@mranney](https://twitter.com/mranney)
+
 [@mikeal](https://twitter.com/mikeal)
 
