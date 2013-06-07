@@ -1,0 +1,18 @@
+{
+  "name": "demos",
+  "version": "0.0.1",
+  "description": "demo",
+  "main": "async.js",
+  "dependencies": {
+    "express": "~3.2.6",
+    "ircb": "~0.2.0",
+    "mysql": "~2.0.0-alpha8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
