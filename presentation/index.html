@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>node.js Lunch n' Learn 6/6/13</title>
+
+		<meta name="description" content="An introduction to node.js">
+		<meta name="author" content="Dave Stevens">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>node.js</h1>
+					<h3>Lunch n' Learn</h3>
+					<p>
+						<small>Dave Stevens / dstevens@zappos.com / @shakefon</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Whut?</h2>
+					<ul>
+			      <li>Platform (not a language)</li>
+            <li>Built upon V8 (Chrome's JS engine)</li>
+            <li>JavaScript!</li>
+				    <li>Lightweight &amp; Efficient</li>
+            <li>Event-driven, non-blocking I/O model</li>
+					</ul>
+				</section>
+
+				<!-- Example of nested vertical slides -->
+				<section>
+					<section>
+						<h2>Oh, Server-side JavaScript!</h2>
+					</section>
+					<section>
+						<h2>NO.</h2>
+					</section>
+					<section>
+						<h2>CLI</h2>
+            <pre>
+              <code data-trim contenteditable style="font-size:18px; margin-top:20px;">
+respond(process.argv);
+
+function respond (args) {
+  if (args.length < 3) {
+    console.log('Come on, give me something to work with');
+    process.exit(1);
+    return;
+  }
+
+  if (args[2] == 'help') {
+    console.log('You need help!');
+    process.exit(0);
+    return;
+  }
+}
+              </code>
+            </pre>
+					</section>
+					<section>
+            <h2>IRC</h2>
+            <pre>
+              <code data-trim contenteditable style="font-size:18px; margin-top:20px;">
+var ircb = require('ircb');
+
+var irc = ircb({
+  host: 'irc.freenode.org',
+  secure: true,
+  nick: 'nodeIRCbot',
+  username: 'nodeIRCbot',
+  realName: 'nodeIRCbot'
+}, function () {
+  console.log('Connected');
+  console.log('MOTD:\n');
+  console.log(irc.motd);
+});
+              </code>
+            </pre>
+					</section>
+          <section>
+            <h2>and yes, a web server...</h2>
+          </section>
+				</section>
+
+				<section>
+					<h2>Non-blocking?</h2>
+					<ul>
+					  <li>Asynchronous code execution</li>
+            <li>Embrace callbacks!</li>
+            <li>Don't rely on order of execution</li>
+					</ul>
+				</section>
+
+        <section>
+          <h2>Traditional blocking I/O</h2>
+          <h3>PHP</h3>
+          <pre>
+            <code data-trim contenteditable style="font-size:18px; margin-top:20px;">
+&lt;?php
+
+$results = databaseQuery("SELECT * FROM massive_table");
+var_dump($results);
+
+// Once all results are returned, databaseQuery finishes
+// executing and returns the results, then we see them
+// printed out.
+
+// But what if that query takes a long time to run?
+            </code>
+          </pre>
+        </section>
+
+				<section>
+					<h2>Non-blocking I/O</h2>
+          <h3>node.js</h3>
+          <pre>
+            <code data-trim contenteditable style="font-size:18px; margin-top:20px;">
+var results;
+
+databaseQuery('SELECT * FROM massive_table', function (returnedRows) {
+  results = returnedRows;
+});
+
+console.log(results);
+
+// console.log will be executed immediately after the databaseQuery 
+// func is invoked, so that will be an undefined value.
+
+// But, execution is not blocked - so if the query takes a long time,
+// the rest of the program can continue. Code accordingly!
+            </code>
+          </pre>
+				</section>
+
+        <section>
+          <h2>Make use of your callback function</h2>
+          <pre>
+            <code data-trim contenteditable style="font-size:18px; margin-top:20px;">
+var results;
+
+databaseQuery('SELECT * FROM massive_table', function (returnedRows) {
+  results = returnedRows;
+  console.log(results);
+});
+
+// now we have results logged out when they're ready, but anything
+// else we need to do in parallel isn't blocked waiting for the results
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <section>
+            <h2>npm</h2>
+            <h3>Node Package Manager</h3>
+          
+            <p>
+              A repository of community-contributed modules (you can contribute!)
+              to perform a variety of tasks, so that the core of node remains
+              uncluttered and minimal.
+            </p>
+          </section>
+
+          <section>
+            <h2>package.json</h2>
+            <p>
+              Tells npm about your project, including any module dependencies that
+              you have. Needed for publishing to npm's repository but also very
+              useful for deploying your project...
+            </p>
+          </section>
+          <section>
+            <h2>package.json</h2>
+            <pre>
+              <code data-trim contenteditable style="font-size:18px; margin-top:20px;">
+{
+  "name":"Example Module",
+  "version":"0.0.1",
+  "author":"Dave Stevens &lt;dstevens@zappos.com&gt;",
+  "description":"An excuse to show off a package.json file",
+  ...
+  "dependencies":{
+    "mysql":"2.0.x",
+    "winston":"*"
+  }
+  ...
+}
+              </code>
+            </pre>
+            <p>
+              Interactive guide at http://package.json.jit.su
+            </p>
+          </section>
+
+          <section>
+            <h2>Using npm</h2>
+            <p>
+              Install someone else's module:
+            </p>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+npm install mysql
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Using npm</h2>
+            <p>
+              Update installed module:
+            </p>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+npm update mysql
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Using npm</h2>
+            <p>
+              Install your project:
+            </p>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+cd /path/to/your/project
+npm install
+            </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>Web Server</h2>
+            <p>
+              Mindshift if you're from a PHP / Java / etc background - you're now handling
+              the application AND the server in one place
+            </p>
+            <p>
+              Listens for connections on a port, so file path is largely irrelevant
+            </p>
+          </section>
+          <section>
+            <h2>Web Server</h2>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+var http = require('http');
+
+http.createServer(function (req, res) {
+  res.writeHead(200, {"Content-Type":"text/plain"});
+  res.write("Hello, world!");
+  res.end();
+}).listen(3000);
+// Chaining!
+console.log("Server running - http://localhost:3000");
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Express</h2>
+            <ul>
+              <li>Web Application Framework</li>
+              <li>Connect middleware</li>
+              <li>Actively developed, mature (for anything node...) and in use today here</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Express</h2>
+            <h3>Installing</h3>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+npm install express
+            </code></pre>
+          </section>
+          <section>
+            <h2>Express</h2>
+            <h3>Simple web app</h3>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+  res.send("Hello, world! Zoooooom!");
+});
+
+app.listen(3000);
+console.log("Express app running - http://localhost:3000");
+            </code></pre>
+          </section>
+          <section>
+            <h2>Express</h2>
+            <h3>Simple web app</h3>
+            <pre><code data-trim content-editable style="font-size:18px; margin-top:20px;">
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+  res.send("Hello, world! Zoooooom!");
+});
+
+app.get('/more-original', function (req, res) {
+  res.send("Because Hello World is just too cliched");
+});
+
+app.listen(3000);
+console.log("Express app running - http://localhost:3000");
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <h2>Building Projects</h2>
+          <p>
+            Grunt.js is written in node, can also be used to build your projects,
+            do minification and concatenation, etc
+          </p>
+          <p>
+            Assemble (npm install assemble) lets you do static file generation
+            like Jekyll, but in node
+          </p>
+        </section>
+        <section>
+          <h2>Cool Projects in node</h2>
+          <ul>
+            <li>Nodecopter</li>
+            <li>Nodebots</li>
+            <li>AirBnB</li>
+            <li>Linkedin Mobile</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Style Guide</h2>
+          <h3>https://github.com/felixge/node-style-guide</h3>
+          <p>
+            Get in to some good habits
+          </p>
+        </section>
+        <section>
+          <h2>Next Steps</h2>
+          <ul>
+            <li>Tech U class soon</li>
+            <li>Embrace IRC! #node.js</li>
+            <li>Resources to be sent out today</li>
+            <li>Heroku, AWS Free Tier</li>
+            <li>All you need is your laptop!</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Obligatory Questions Slide</h2>
+          <p>
+            Love talking about node, come talk anytime
+          </p>
+          <ul>
+            <li>dstevens@zappos.com</li>
+            <li>@shakefon</li>
+          </ul>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
